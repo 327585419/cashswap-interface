@@ -1,7 +1,10 @@
 {
   "name": "cashswap",
   "version": "0.1.0",
+  "description": "Interface to the CashSwap SLP-BCH exchange platform",
   "private": true,
+  "author": "CheshireCat",
+  "license": "MIT",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
