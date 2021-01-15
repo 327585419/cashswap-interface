@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { InputGroup, InputGroupAddon, Button, Input } from 'reactstrap';
 import { Media, Form, FormGroup, Label } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+
 
 const BCHSLPprice = 400000
 const BCHUSDprice = 530
@@ -29,7 +31,7 @@ class SwapForm extends React.Component {
   render() {
       return (
 
-              <div>
+              <>
               <Form onSubmit={this.handleSubmit}>
                 <FormGroup row>
                     You are exchanging:
@@ -49,21 +51,40 @@ class SwapForm extends React.Component {
                 </FormGroup>
                 <Button>Exchange</Button>
               </Form>
-              </div>
+              </>
       );
   }
 };
 
+const ConvertFromDropdown = (props) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggle = () => setDropdownOpen(prevState => !prevState);
+
+  return (
+    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+      <DropdownToggle caret>
+        Dropdown
+        </DropdownToggle>
+      <DropdownMenu>
+        <DropdownItem header>Header</DropdownItem>
+        <DropdownItem>Some Action</DropdownItem>
+        <DropdownItem text>Dropdown Item Text</DropdownItem>
+        <DropdownItem disabled>Action (disabled)</DropdownItem>
+        <DropdownItem divider />
+        <DropdownItem>Foo Action</DropdownItem>
+        <DropdownItem>Bar Action</DropdownItem>
+        <DropdownItem>Quo Action</DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+}
 
 function MainSwap() {
   return (
-      <Container>
-          <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
+        <>
                 <SwapForm/>
-            </Col>
-          </Row>
-      </Container>
+        </>
   );
 }
 
