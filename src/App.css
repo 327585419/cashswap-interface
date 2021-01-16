@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.mainSwapContainer {
+  border: 2px solid #181c24;
+  border-radius: 15px;
+  margin: 60px auto;
+  padding: 30px 30px 30px 30px ;
+  background: rgba(50, 88, 50, 0.5);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.Jumbotron{
+    background-image: linear-gradient( 143.3deg,  rgba(216,27,96,1) 33.1%, rgba(237,107,154,1) 74.9% );
+
+}
+h1 {
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
