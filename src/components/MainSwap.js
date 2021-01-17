@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { InputGroup, InputGroupAddon, Button, Input } from 'reactstrap';
-import { Media, Form, FormGroup, Label } from 'reactstrap';
+import { Media, Form, FormGroup, Label, InputGroupText } from 'reactstrap';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-
+import './MainSwap.css';
 
 const BCHSLPprice = 400000
 const BCHUSDprice = 530
@@ -13,7 +13,7 @@ class SwapForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { slp: 0, bch: 0, slpusd: 0, bchusd: 0, privateKey: '',
+    this.state = { slp: 0.0, bch: 0.0, slpusd: 0.0, bchusd: 0.0, privateKey: '',
         isModalOpen: false, setModal: false };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,25 +57,53 @@ class SwapForm extends React.Component {
   render() {
       return (
 
-              <>
+              <div id="mainDiv">
+              <Row><Col><h4 className="SwapFormTitle">Swap</h4></Col><Col xs="auto"></Col></Row>
               <Form>
-                <FormGroup row>
-                    You are exchanging:
+                <FormGroup row className="formGroupFrom">
+                    <Row><Col>You are exchanging:</Col>
                   <Col sm={10}>
-                    <Input type="text" name="BCHamount" id="BCHamount" onChange={this.handleChange} value={this.state.bch} bsSize="lg" /><Label for="BCHamount" sm={2} size="lg">BCH</Label>
-                    <Input type="text" name="BCHUSDamount" id="BCHUSDamount" bsSize="lg" value={this.state.bchusd} disabled /><Label for="BCHUSDamount" sm={2} size="lg">USD</Label>
-                  </Col>
+                        <Row><InputGroup>
+                    <Input type="number" name="BCHamount" id="BCHamount" onChange={this.handleChange} value={this.state.bch} bsSize="lg" />
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>BCH</InputGroupText>
+                        </InputGroupAddon></InputGroup></Row>
+                    <Row><InputGroup>
+                    <Input type="number" name="BCHUSDamount" id="BCHUSDamount" bsSize="lg" value={this.state.bchusd} disabled />
+                    <InputGroupAddon addonType="append">
+                      <InputGroupText>estimated USD value</InputGroupText>
+                    </InputGroupAddon>
+                    </InputGroup></Row>
+                  </Col></Row>
 
                 </FormGroup>
 
-                <FormGroup row>
-                    You will receive:
+
+<Media>
+  <Media left>
+    <Media object data-src="../media/arrow-down-grey.svg/64x64" alt="arrow down" />
+  </Media>
+</Media>
+
+                <FormGroup row className="formGroupTo">
+                    <Row><Col>You will receive:</Col>
                   <Col sm={10}>
-                    <Input type="text" name="SLPamount" id="SLPamount" bsSize="lg" value={this.state.slp} disabled /><Label for="SLP" sm={2} size="lg">SLP</Label>
-                    <Input type="text" name="SLPUSDamount" id="SLPUSDamount" bsSize="lg" value={this.state.slpusd} disabled /><Label for="SLPUSDamount" sm={2} size="lg">USD</Label>
-                  </Col>
+                        <Row><InputGroup>
+                    <Input type="number" name="SLPamount" id="SLPamount" onChange={this.handleChange} value={this.state.slp} bsSize="lg" disabled />
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>SLP</InputGroupText>
+                        </InputGroupAddon></InputGroup></Row>
+                    <Row><InputGroup>
+                    <Input type="number" name="SLPUSDamount" id="SLPUSDamount" bsSize="lg" value={this.state.slpusd} disabled />
+                    <InputGroupAddon addonType="append">
+                      <InputGroupText>estimated USD value</InputGroupText>
+                    </InputGroupAddon>
+                    </InputGroup></Row>
+                  </Col></Row>
+
                 </FormGroup>
-                <Button onClick={this.handleSubmit}>Exchange</Button>
+
+                <Button onClick={this.handleSubmit} className="SwapButton">Swap</Button>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                   <ModalHeader toggle={this.toggleModal}>Private key needed for the swap</ModalHeader>
                   <ModalBody>
@@ -88,7 +116,7 @@ class SwapForm extends React.Component {
                   </ModalFooter>
                 </Modal>
               </Form>
-              </>
+              </div>
       );
   }
 };
