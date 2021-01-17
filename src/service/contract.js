@@ -32,11 +32,15 @@ const BCHUTXOIndex = "00000000";
 const userUTXOBCHBalance = "8813000000000000";
 const userOutputBCHBalance = "2202000000000000";
 
-const swap = (spiceTokenAmount, bchAmount, userPrivateKey, userPublicKey) => {
+// USER PKI
+const userPrivateKey = "04AF566DC2E3FCFD8BBE42AC6961A7FBF481D94ECBCEED99BCA718E9AE635913";
+const userPublicKey = "03C94932502939D228C483AF9597C16FE53636DD0735F293508B9F05892B1644D7";
+
+const swap = (spiceTokenAmount, bchAmount) => {
   const newSPICETokenAmountNumber = contractSPICETokenAmountNumber - spiceTokenAmount;
   const newSPICETokenAmountHex = newSPICETokenAmountNumber.toString(16);
 
-  const willEditedSPICETokenAmountHex = helper.reverseDigits(helper.convert8bit(newSPICETokenAmountHex));
+  const willEditedSPICETokenAmountHex = helper.reverseDigits(helper.convert4Byte(newSPICETokenAmountHex));
   const newContractDataHex = contractCurrentByteData.replace(contractSPICETokenData, willEditedSPICETokenAmountHex);
   const hashOfNewContractData = helper.ripemdWithSha(newContractDataHex);
 
@@ -44,9 +48,9 @@ const swap = (spiceTokenAmount, bchAmount, userPrivateKey, userPublicKey) => {
 
   const contractOutputBCHBalance = contractCurrentBCHBalanceNumber + bchAmount;
   const contractOutputBCHBalanceHex = contractOutputBCHBalance.toString(16);
-  const contractOutputBCHBalanceLittleEndian = helper.reverseDigits(helper.convert16bit(contractOutputBCHBalanceHex));
-  const contractOutputSPICEBalance = helper.convert16bit(newSPICETokenAmountHex);
-  const userOutputSPICEBalance = helper.convert16bit(spiceTokenAmount.toString(16));
+  const contractOutputBCHBalanceLittleEndian = helper.reverseDigits(helper.convert8byte(contractOutputBCHBalanceHex));
+  const contractOutputSPICEBalance = helper.convert8byte(newSPICETokenAmountHex);
+  const userOutputSPICEBalance = helper.convert8byte(spiceTokenAmount.toString(16));
 
   // Transaction Components
   const transactionInputFieldsConcat = contractUTXOReversed + "01000000" + BCHUTXOTransactionIdReversed + "00000000";
@@ -62,14 +66,55 @@ const swap = (spiceTokenAmount, bchAmount, userPrivateKey, userPublicKey) => {
   const sighashPreimageForFirstInput = constructSighashForContractInput(transactionInputFieldsConcatHash, hashOfTransactionOutputFields);
 
   //Sign for contract
-  const contractSign = ecdsa.signMessage("0x" + sighashPreimageForFirstInput, "0x" + contractPrivateKey);
+  const contractSign = ecdsa.signMessage("0x" + sighashPreimageForFirstInput.sighashPreimageConcatHash, "0x" + contractPrivateKey);
+
+  // DER Encode for contract
+  const derEncodeForContractSign = derEncodeForSign(contractSign, "contract");
 
   //Constructing Sighash Preimage for second input:
   const sighashPreimageForSecondInput = constructSighashForUserInput(transactionInputFieldsConcatHash, userPublicKeyHash, hashOfTransactionOutputFields);
 
   //Sign for user
   const userSign = ecdsa.signMessage("0x" + sighashPreimageForSecondInput, "0x" + userPrivateKey);
-  console.log(userSign);
+
+  // DER Encode for user
+  const derEncodeForUserSign = derEncodeForSign(userSign, "user");
+
+  //  ************* final ************* //
+  const transactionText =
+    "02000000" +
+    "02" +
+    contractUTXOReversed +
+    contractUTXOIndex +
+    "fd2704" +
+    "01aa" +
+    "4c" +
+    helper.hexLength(transactionOutputsConcat) +
+    transactionOutputsConcat +
+    "4d4a01" +
+    contractCurrentByteData +
+    "4c" +
+    helper.hexLength(sighashPreimageForFirstInput.sighashPreimageConcat) +
+    sighashPreimageForFirstInput.sighashPreimageConcat +
+    helper.hexLength(derEncodeForContractSign) +
+    derEncodeForContractSign +
+    "4d4a01" +
+    contractCurrentByteData +
+    "ffffffff" +
+    BCHUTXOTransactionIdReversed +
+    BCHUTXOIndex +
+    "6a" +
+    helper.hexLength(derEncodeForUserSign + "41") +
+    derEncodeForUserSign +
+    "41" +
+    helper.hexLength(userPublicKey) +
+    userPublicKey +
+    "ffffffff" +
+    "03" +
+    transactionOutputsConcat +
+    "00000000";
+
+  console.log(transactionText);
 };
 
 // First input
@@ -91,7 +136,7 @@ const constructSighashForContractInput = (transactionInputFieldsConcatHash, hash
 
   const sighashPreimageConcatHash = helper.doubleSha(sighashPreimageConcat);
 
-  return sighashPreimageConcatHash;
+  return { sighashPreimageConcatHash, sighashPreimageConcat };
 };
 
 // First input
@@ -114,6 +159,37 @@ const constructSighashForUserInput = (transactionInputFieldsConcatHash, userPubl
   const sighashPreimageConcatHash = helper.doubleSha(sighashPreimageConcat);
 
   return sighashPreimageConcatHash;
+};
+
+const derEncodeForSign = (sign, type) => {
+  const minLimit = 57896044600000000000000000000000000000000000000000000000000000000000000000000;
+  const maxLimit = 115792089000000000000000000000000000000000000000000000000000000000000000000000;
+  let rValue = sign[1];
+  let sValue = sign[2];
+
+  const rValueDecimal = parseInt(rValue, 16);
+  const sValueDecimal = parseInt(sValue, 16);
+
+  if (minLimit < rValueDecimal && rValueDecimal < maxLimit) {
+    rValue = "00" + rValue;
+  }
+
+  if (minLimit < sValueDecimal && sValueDecimal < maxLimit) {
+    sValue = "00" + sValue;
+  }
+
+  let preString = "";
+
+  if (type === "contract") {
+    preString = "0221" + rValue + "0220" + sValue;
+  } else {
+    preString = "0220" + rValue + "0220" + sValue;
+  }
+
+  const preStringLegthHex = helper.hexLength(preString);
+
+  console.log("30" + preStringLegthHex + preString);
+  return "30" + preStringLegthHex + preString;
 };
 
 export { swap };
