@@ -27,6 +27,15 @@ const reverseDigits = (data) => {
   }
 };
 
+const convert2Byte = (data) => {
+  let str = "";
+  const loopLimit = 3 - data.length;
+  for (let i = 0; i <= loopLimit; i++) {
+    str += "0";
+  }
+  return str + data;
+};
+
 const convert4Byte = (data) => {
   let str = "";
   const loopLimit = 7 - data.length;
@@ -52,6 +61,6 @@ const hexLength = (data) => {
   return dataByteLength.toString(16);
 };
 
-export { ripemdWithSha, doubleSha, reverseDigits, convert4Byte, convert8byte, hexLength };
+export { ripemdWithSha, doubleSha, reverseDigits, convert4Byte, convert8byte, hexLength, convert2Byte };
 
 // const willEditedSPICETokenAmountHex = newSPICETokenAmountHex.slice(1, 3) + "0" + newSPICETokenAmountHex.slice(0, 1) + "0000";

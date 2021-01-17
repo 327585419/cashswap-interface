@@ -2,6 +2,7 @@
 
 import * as helper from "./helper";
 import ecdsa from "./ecdsa";
+import axios from "axios";
 
 // contract initial state
 const contractCurrentByteData =
@@ -12,7 +13,7 @@ const hashOfContractCurrentByteData = helper.ripemdWithSha(contractCurrentByteDa
 // contract initialstate UTXO
 const contractUTXO = "17165add9b48bf23241667eccc54f047d524bdffa05ff02bcc362c06d7c0497f";
 const contractUTXOReversed = "7f49c0d7062c36cc2bf05fa0ffbd24d547f054ccec67162423bf489bdd5a1617";
-const contractUTXOIndex = "01000000";
+const contractUTXOIndex = "02000000";
 
 //contract PKI
 const contractPrivateKey = "05c54c20c8041e105f3f38feb65c335a63cbc4be9bd285b729e3c286079e9463";
@@ -26,8 +27,8 @@ const reversedContractSPICETokenData = helper.reverseDigits(contractSPICETokenDa
 const contractSPICETokenAmountNumber = parseInt(reversedContractSPICETokenData, 16);
 
 // User UTX0 Sets
-const BCHUTXOTransactionId = "ac8ac59a31e143f84ff82758e5de64dcabef93001c0ddee0aa6ef933156bdf31";
-const BCHUTXOTransactionIdReversed = "31df6b1533f96eaae0de0d1c0093efabdc64dee55827f84ff843e1319ac58aac";
+const BCHUTXOTransactionId = "7cc42066826a2b1fe920964104a6b04d0ebb65ec6bfe9bbcfc251706b022469d";
+const BCHUTXOTransactionIdReversed = "9d4622b0061725fcbc9bfe6bec65bb0e4db0a604419620e91f2b6a826620c47c";
 const BCHUTXOIndex = "00000000";
 const userUTXOBCHBalance = "8813000000000000";
 const userOutputBCHBalance = "2202000000000000";
@@ -53,11 +54,13 @@ const swap = (spiceTokenAmount, bchAmount) => {
   const userOutputSPICEBalance = helper.convert8byte(spiceTokenAmount.toString(16));
 
   // Transaction Components
-  const transactionInputFieldsConcat = contractUTXOReversed + "01000000" + BCHUTXOTransactionIdReversed + "00000000";
+  const transactionInputFieldsConcat = contractUTXOReversed + contractUTXOIndex + BCHUTXOTransactionIdReversed + BCHUTXOIndex;
   const transactionInputFieldsConcatHash = helper.doubleSha(transactionInputFieldsConcat);
+
   const transactionFirstOutput =
     "0000000000000000406a04534c500001010453454e44204de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf08" + contractOutputSPICEBalance + "08" + userOutputSPICEBalance;
   const transactionSecondOutput = contractOutputBCHBalanceLittleEndian + "17a914" + hashOfNewContractData + "87";
+
   const transactionThirdOutput = userOutputBCHBalance + "1976a914" + userPublicKeyHash + "88ac";
   const transactionOutputsConcat = transactionFirstOutput + transactionSecondOutput + transactionThirdOutput;
   const hashOfTransactionOutputFields = helper.doubleSha(transactionOutputsConcat);
@@ -80,13 +83,33 @@ const swap = (spiceTokenAmount, bchAmount) => {
   // DER Encode for user
   const derEncodeForUserSign = derEncodeForSign(userSign, "user");
 
+  console.log("second", derEncodeForUserSign);
+
   //  ************* final ************* //
   const transactionText =
     "02000000" +
     "02" +
     contractUTXOReversed +
     contractUTXOIndex +
-    "fd2704" +
+    // "fd2704" +
+    "fd" +
+    helper.reverseDigits(
+      helper.convert2Byte(
+        helper.hexLength(
+          "01aa" +
+            "4c8b" +
+            transactionOutputsConcat +
+            "4d4a01" +
+            contractCurrentByteData +
+            "4cb4" +
+            sighashPreimageForFirstInput.sighashPreimageConcat +
+            helper.hexLength(derEncodeForContractSign) +
+            derEncodeForContractSign +
+            "4d4a01" +
+            contractCurrentByteData
+        )
+      )
+    ) +
     "01aa" +
     "4c" +
     helper.hexLength(transactionOutputsConcat) +
@@ -103,7 +126,7 @@ const swap = (spiceTokenAmount, bchAmount) => {
     "ffffffff" +
     BCHUTXOTransactionIdReversed +
     BCHUTXOIndex +
-    "6a" +
+    helper.hexLength("00" + derEncodeForUserSign + "4121" + userPublicKey) +
     helper.hexLength(derEncodeForUserSign + "41") +
     derEncodeForUserSign +
     "41" +
@@ -114,7 +137,9 @@ const swap = (spiceTokenAmount, bchAmount) => {
     transactionOutputsConcat +
     "00000000";
 
-  console.log(transactionText);
+  // axios.post("https://api.fullstack.cash/v4/electrumx/tx/broadcast", { txHex: transactionText }).then((val) => {
+  //   console.log(val);
+  // });
 };
 
 // First input
@@ -124,7 +149,7 @@ const constructSighashForContractInput = (transactionInputFieldsConcatHash, hash
     transactionInputFieldsConcatHash +
     "752adad0a7b9ceca853768aebb6965eca126a62965f698a0c1bc43d83db632ad" +
     contractUTXOReversed +
-    "01000000" +
+    contractUTXOIndex +
     "17a914" +
     hashOfContractCurrentByteData +
     "87" +
@@ -146,7 +171,7 @@ const constructSighashForUserInput = (transactionInputFieldsConcatHash, userPubl
     transactionInputFieldsConcatHash +
     "752adad0a7b9ceca853768aebb6965eca126a62965f698a0c1bc43d83db632ad" +
     BCHUTXOTransactionIdReversed +
-    "00000000" +
+    BCHUTXOIndex +
     "1976a914" +
     userPublicKeyHash +
     "88ac" +
@@ -171,25 +196,19 @@ const derEncodeForSign = (sign, type) => {
   const sValueDecimal = parseInt(sValue, 16);
 
   if (minLimit < rValueDecimal && rValueDecimal < maxLimit) {
-    rValue = "00" + rValue;
+    rValue = "022100" + rValue;
+  } else {
+    rValue = "0220" + rValue;
   }
 
   if (minLimit < sValueDecimal && sValueDecimal < maxLimit) {
-    sValue = "00" + sValue;
-  }
-
-  let preString = "";
-
-  if (type === "contract") {
-    preString = "0221" + rValue + "0220" + sValue;
+    sValue = "022100" + sValue;
   } else {
-    preString = "0220" + rValue + "0220" + sValue;
+    sValue = "0220" + sValue;
   }
 
-  const preStringLegthHex = helper.hexLength(preString);
-
-  console.log("30" + preStringLegthHex + preString);
-  return "30" + preStringLegthHex + preString;
+  const preStringLegthHex = helper.hexLength(rValue + sValue);
+  return "30" + preStringLegthHex + rValue + sValue;
 };
 
 export { swap };
