@@ -53,9 +53,11 @@ class SwapForm extends React.Component {
     e.preventDefault();
 
     if (this.state.slp === 0 ) {
+        this.setState((state)=>{return {swapStatus : "SLP can't be 0"}});
       return;
     }
     if (this.state.privateKey === '' ) {
+        this.setState((state)=>{return {swapStatus : 'no private key'}});
         this.toggleModal();
       return;
     }
@@ -85,49 +87,52 @@ class SwapForm extends React.Component {
   render() {
       return (
               <div id="mainDiv">
-              
+
               <Row><Col><h4 className="SwapFormTitle">Swap</h4></Col><Col xs="auto"></Col></Row>
               <Form>
                 <FormGroup row className="formGroupFrom">
-                    <Row><Col>You are exchanging:</Col>
-                  <Col sm={9}>
-                        <Row><InputGroup>
-                    <Input type="number" name="BCHamount" id="BCHamount" onChange={this.handleChange} value={this.state.bch} bsSize="lg" />
-                        <InputGroupAddon addonType="append">
-                          <InputGroupText>BCH</InputGroupText>
-                        </InputGroupAddon></InputGroup></Row>
-                    <Row><InputGroup>
-                    <Input type="number" name="BCHUSDamount" id="BCHUSDamount" bsSize="lg" value={this.state.bchusd} disabled />
-                    <InputGroupAddon addonType="append">
-                      <InputGroupText>estimated USD value</InputGroupText>
-                    </InputGroupAddon>
-                    </InputGroup></Row>
-                  </Col></Row>
-
+                    <Row><Col>You are exchanging:</Col></Row>
+                        <Row><Col>
+                            <InputGroup>
+                                <Input type="number" name="BCHamount" id="BCHamount" onChange={this.handleChange} value={this.state.bch} bsSize="lg" />
+                                <InputGroupAddon addonType="append">
+                                    <InputGroupText>BCH</InputGroupText>
+                                </InputGroupAddon>
+                            </InputGroup>
+                        </Col></Row>
+                        <Row><Col>
+                            <InputGroup>
+                                <Input type="number" name="BCHUSDamount" id="BCHUSDamount" bsSize="lg" value={this.state.bchusd} disabled />
+                                <InputGroupAddon addonType="append">
+                                    <InputGroupText>estimated USD value</InputGroupText>
+                                </InputGroupAddon>
+                            </InputGroup>
+                        </Col></Row>
                 </FormGroup>
 
 
                 <ArrowDown size="18" color={'black'} />
 
                 <FormGroup row className="formGroupTo">
-                    <Row><Col xs="auto"></Col><Col>You will receive:</Col>
-                  <Col sm={9}>
-                        <Row><InputGroup>
-                    <Input type="number" name="SLPamount" id="SLPamount" onChange={this.handleChange} value={this.state.slp} bsSize="lg" disabled />
-                        <InputGroupAddon addonType="append">
-                          <InputGroupText>SLP</InputGroupText>
-                        </InputGroupAddon></InputGroup></Row>
-                    <Row><InputGroup>
-                    <Input type="number" name="SLPUSDamount" id="SLPUSDamount" bsSize="lg" value={this.state.slpusd} disabled />
-                    <InputGroupAddon addonType="append">
-                      <InputGroupText>estimated USD value</InputGroupText>
-                    </InputGroupAddon>
-                    </InputGroup></Row>
-                  </Col></Row>
-
+                    <Row><Col>You will receive:</Col></Row>
+                        <Row><Col>
+                            <InputGroup>
+                            <Input type="number" name="SLPamount" id="SLPamount" onChange={this.handleChange} value={this.state.slp} bsSize="lg" disabled />
+                                <InputGroupAddon addonType="append">
+                                  <InputGroupText>SLP</InputGroupText>
+                                </InputGroupAddon></InputGroup>
+                        </Col></Row>
+                        <Row><Col>
+                            <InputGroup>
+                            <Input type="number" name="SLPUSDamount" id="SLPUSDamount" bsSize="lg" value={this.state.slpusd} disabled />
+                            <InputGroupAddon addonType="append">
+                              <InputGroupText>estimated USD value</InputGroupText>
+                            </InputGroupAddon>
+                            </InputGroup>
+                        </Col></Row>
                 </FormGroup>
 
-                <Button onClick={this.handleSubmit} className="SwapButton">Start Swap!</Button>
+                <Button color="success" onClick={this.handleSubmit} className="SwapButton">Start swap</Button>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                   <ModalHeader toggle={this.toggleModal}>Private key needed for the swap</ModalHeader>
                   <ModalBody>
@@ -140,36 +145,13 @@ class SwapForm extends React.Component {
                   </ModalFooter>
                 </Modal>
               </Form>
-              <PresentResultOfSwap swapStatus={this.swapStatus} />
+              <p>{this.swapStatus}</p>
               </div>
       );
   }
 };
 
 
-const ConvertFromDropdown = (props) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const toggle = () => setDropdownOpen(prevState => !prevState);
-
-  return (
-    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle caret>
-        Dropdown
-        </DropdownToggle>
-      <DropdownMenu>
-        <DropdownItem header>Header</DropdownItem>
-        <DropdownItem>Some Action</DropdownItem>
-        <DropdownItem text>Dropdown Item Text</DropdownItem>
-        <DropdownItem disabled>Action (disabled)</DropdownItem>
-        <DropdownItem divider />
-        <DropdownItem>Foo Action</DropdownItem>
-        <DropdownItem>Bar Action</DropdownItem>
-        <DropdownItem>Quo Action</DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
-  );
-}
 
 
 function MainSwap() {
