@@ -1,71 +1,81 @@
-import logo from './logo.svg';
-import './App.css';
-import MainSwap from './components/MainSwap'
-import React, { useState } from 'react';
-import { Jumbotron, Button } from 'reactstrap';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-import { Container, Row, Col } from 'reactstrap';
+/* eslint-disable jsx-a11y/alt-text */
+import "./App.css";
+import ok from "./img/ok.png";
+import bch from "./img/bch.png";
+import spice from "./img/spice.png";
+import { swap } from "./service/contract";
 
-
-function App(props) {
-
-    const [collapsed, setCollapsed] = useState(true);
-
-    const toggleNavbar = () => setCollapsed(!collapsed);
-
+function App() {
+  const exchangeButtonClick = () => {
+    swap(500, 2500);
+  };
 
   return (
-    <div className="App">
+    <div className="main">
+      <div className="content">
+        <div className="layout">
+          <div className="bch-div">
+            <div className="you-are-exchanging">You are exchanging</div>
+            <div className="bch-context">
+              <div className="bch-left-side">
+                <div className="bch-input">
+                  <input className="input" value="2500" type="text" />
+                  <div className="bch">BCH</div>
+                </div>
 
-        <Jumbotron className="Jumbotron">
-          <h1 className="display-3">CashSwap</h1>
-          <p className="lead">The first BCH-SLP conversion app!</p>
-          <hr className="my-2" />
-          <p>Alpha version for testing purposes only. Use at your own peril!</p>
-          <p className="lead">
-            <Button color="primary">Learn More</Button>
-          </p>
-         </Jumbotron>
+                <div className="divider" />
 
-         <Container>
-             <Row>
-             <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <div className="usd-div">
+                  <span>0.01</span>
+                  <span>USD</span>
+                </div>
+              </div>
+              <div>
+                <img className="bch-image" src={bch} />
+              </div>
+            </div>
+          </div>
 
-      <Navbar color="faded" light>
-        <NavbarBrand href="/" className="mr-auto">Contents:</NavbarBrand>
-        <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-        <Collapse isOpen={!collapsed} navbar>
-          <Nav navbar>
-            <NavItem>
-              <NavLink href="/components/">Components</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-            </NavItem>
-          </Nav>
-        </Collapse>
-      </Navbar>
+          <div className="arrow-icon">
+            <img src={ok} />
+          </div>
 
+          <div className="spice-div">
+            <div className="you-are-exchanging">You will receive</div>
+            <div className="bch-context">
+              <div className="bch-left-side">
+                <div className="bch-input">
+                  <input className="spice-input" value="2500" type="text" />
+                  <div className="spice">SPICE</div>
+                </div>
 
-                <Container className="themed-container container my-3 text-white mainSwapContainer" fluid="md" >
-                    <MainSwap/>
-                </Container>
-            </Col>
-          </Row>
-      </Container>
+                <div className="divider-spice" />
 
-
-
-      <Jumbotron  className="Jumbotron">
-        <Container fluid="xl">
-            <Row xs="2">
-                <p className="lead">
-                    <Col  sm={{ size: 'auto', offset: 1 }}>License: MIT</Col>
-                    <Col sm={{ size: 'auto', offset: 1 }}>Created by: two guys and a cat</Col>
-                </p>
-            </Row>
-        </Container>
-       </Jumbotron>
+                <div className="usd-div">
+                  <span>0.01</span>
+                  <span>USD</span>
+                </div>
+              </div>
+              <div>
+                <img className="bch-image" src={spice} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bottom-main-div">
+          <div className="bottom-text">*All on-chain and liquidity provider fees are included.</div>
+          <div>
+            <button
+              className="button"
+              onClick={() => {
+                exchangeButtonClick();
+              }}
+            >
+              Exchange
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
