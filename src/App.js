@@ -45,7 +45,7 @@ function App() {
             <div className="bch-context">
               <div className="bch-left-side">
                 <div className="bch-input">
-                  <input className="spice-input" value="2500" type="text" />
+                  <input className="spice-input" value="500" type="text" />
                   <div className="spice">SPICE</div>
                 </div>
 
@@ -71,7 +71,7 @@ function App() {
                 exchangeButtonClick();
               }}
             >
-              Exchange
+              Swap
             </button>
           </div>
         </div>

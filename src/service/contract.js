@@ -13,7 +13,7 @@ const hashOfContractCurrentByteData = helper.ripemdWithSha(contractCurrentByteDa
 // contract initialstate UTXO
 const contractUTXO = "17165add9b48bf23241667eccc54f047d524bdffa05ff02bcc362c06d7c0497f";
 const contractUTXOReversed = "7f49c0d7062c36cc2bf05fa0ffbd24d547f054ccec67162423bf489bdd5a1617";
-const contractUTXOIndex = "02000000";
+const contractUTXOIndex = "05000000";
 
 //contract PKI
 const contractPrivateKey = "05c54c20c8041e105f3f38feb65c335a63cbc4be9bd285b729e3c286079e9463";
@@ -28,7 +28,7 @@ const contractSPICETokenAmountNumber = parseInt(reversedContractSPICETokenData, 
 
 // User UTX0 Sets
 const BCHUTXOTransactionId = "7cc42066826a2b1fe920964104a6b04d0ebb65ec6bfe9bbcfc251706b022469d";
-const BCHUTXOTransactionIdReversed = "9d4622b0061725fcbc9bfe6bec65bb0e4db0a604419620e91f2b6a826620c47c";
+const BCHUTXOTransactionIdReversed = "4cddb0b2c6162fdcfe85c54754be9d7b015ed04ad61df046224e79db271d425f";
 const BCHUTXOIndex = "00000000";
 const userUTXOBCHBalance = "8813000000000000";
 const userOutputBCHBalance = "2202000000000000";
@@ -137,9 +137,9 @@ const swap = (spiceTokenAmount, bchAmount) => {
     transactionOutputsConcat +
     "00000000";
 
-  // axios.post("https://api.fullstack.cash/v4/electrumx/tx/broadcast", { txHex: transactionText }).then((val) => {
-  //   console.log(val);
-  // });
+  axios.post("https://api.fullstack.cash/v4/electrumx/tx/broadcast", { txHex: transactionText }).then((val) => {
+    window.open(`https://explorer.bitcoin.com/bch/tx/${val.data.txid}`, "_blank");
+  });
 };
 
 // First input

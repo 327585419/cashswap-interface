@@ -20,7 +20,7 @@
   background: #23242a;
   height: 10rem;
   width: 30rem;
-  border: 1px solid #8bb35c;
+  border: 4px solid #8bb35c;
   border-radius: 13px;
   margin-bottom: 1rem;
 }
@@ -29,7 +29,7 @@
   background: #23242a;
   height: 10rem;
   width: 30rem;
-  border: 1px solid #ef2a31;
+  border: 4px solid #ef2a31;
   border-radius: 13px;
   margin-top: 1rem;
 }
@@ -53,14 +53,14 @@
 }
 
 .bch-input {
-  width: 15rem;
+  width: 17rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .usd-div {
-  width: 15rem;
+  width: 17rem;
   display: flex;
   justify-content: space-between;
   color: #fff;
@@ -114,7 +114,7 @@
   transform: translateX(6%);
   text-align: center;
   border-radius: 1rem;
-  bottom: -21%;
+  bottom: -22%;
 }
 
 .button {
