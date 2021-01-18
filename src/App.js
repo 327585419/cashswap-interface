@@ -17,7 +17,7 @@ function App(props) {
   return (
     <div className="App">
 
-        <Jumbotron>
+        <Jumbotron className="Jumbotron">
           <h1 className="display-3">CashSwap</h1>
           <p className="lead">The first BCH-SLP conversion app!</p>
           <hr className="my-2" />
@@ -32,7 +32,7 @@ function App(props) {
              <Col sm="12" md={{ size: 6, offset: 3 }}>
 
       <Navbar color="faded" light>
-        <NavbarBrand href="/" className="mr-auto">reactstrap</NavbarBrand>
+        <NavbarBrand href="/" className="mr-auto">Contents:</NavbarBrand>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         <Collapse isOpen={!collapsed} navbar>
           <Nav navbar>
@@ -47,7 +47,7 @@ function App(props) {
       </Navbar>
 
 
-                <Container className="themed-container" fluid="md" class="container p-3 my-3 bg-primary text-white">
+                <Container className="themed-container container my-3 text-white mainSwapContainer" fluid="md" >
                     <MainSwap/>
                 </Container>
             </Col>
@@ -56,10 +56,15 @@ function App(props) {
 
 
 
-      <Jumbotron>
-        <p className="lead">
-            License: MIT  Created by: two Turk guys and a cat
-        </p>
+      <Jumbotron  className="Jumbotron">
+        <Container fluid="xl">
+            <Row xs="2">
+                <p className="lead">
+                    <Col  sm={{ size: 'auto', offset: 1 }}>License: MIT</Col>
+                    <Col sm={{ size: 'auto', offset: 1 }}>Created by: two guys and a cat</Col>
+                </p>
+            </Row>
+        </Container>
        </Jumbotron>
     </div>
   );
