@@ -1,5 +1,8 @@
 #mainDiv{
     padding: 13px 13px 13px 13px ;
+    background-color: #black;
+    opacity: 0.9;
+    filter: alpha(opacity=60);
 }
 
 .formGroupFrom{
@@ -7,6 +10,7 @@
     border-radius: 15px;
     margin: 6px auto;
     padding: 9px 9px 9px 9px;
+    background-color: transparent;
 }
 
 .formGroupTo{
@@ -23,7 +27,7 @@
 }
 
 
-#dinput {
+input {
     background-color: transparent;
     opacity: 0.8;
   	filter: alpha(opacity=60); /* For IE8 and earlier */
