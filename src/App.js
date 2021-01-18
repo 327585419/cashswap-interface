@@ -103,7 +103,7 @@ function App(props) {
         <Row>
                 <Col  sm={{ size: 'auto' }}>License: MIT</Col>
                 <Col sm={{ size: 'auto'}}>Created by: Burak Keceli, Ahmet Faruk and CheshireCat for the Coinparty Hackathon January 2021</Col>
-                <Col sm={{ size: 'auto'}}><a href="https://github.com/serenitytomorrow/cashswap-interface"><img src="../media/github.png"></img></a></Col>
+                <Col sm={{ size: 'auto'}}><a href="https://github.com/serenitytomorrow/cashswap-interface"><img src="media/github.png"></img></a></Col>
         </Row></p>
         </Container>
        </Jumbotron>
