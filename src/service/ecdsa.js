@@ -44,8 +44,8 @@ ecdsa.signMessage = (hash, privateKey) => {
   const signature = secp256k1.ec.keyFromPrivate(Buffer.from(privateKey.slice(2), "hex")).sign(Buffer.from(hash.slice(2), "hex"), { canonical: true });
   return [
     `0x${web3Utils.padLeft(Number(27 + Number(signature.recoveryParam)).toString(16), 64)}`,
-    `0x${web3Utils.padLeft(signature.r.toString(16), 64)}`,
-    `0x${web3Utils.padLeft(signature.s.toString(16), 64)}`,
+    `${web3Utils.padLeft(signature.r.toString(16), 64)}`,
+    `${web3Utils.padLeft(signature.s.toString(16), 64)}`,
   ];
 };
 
